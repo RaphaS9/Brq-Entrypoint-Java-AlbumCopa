@@ -5,6 +5,18 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/*
+create table figurinha 
+    -> (numero int not null primary key,
+    ->  pagina int not null,
+    ->  descricao varchar(30) not null,
+    ->  qtde int not null);
+create table irmao
+    -> (id int not null auto_increment primary key,
+    ->  nome varchar(20) not null,
+    ->  contato varchar(15) not null);
+*/
+
 public class AlbumBD {
 
     public static void popular() {
