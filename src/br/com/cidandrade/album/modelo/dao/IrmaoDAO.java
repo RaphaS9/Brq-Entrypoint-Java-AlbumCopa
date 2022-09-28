@@ -1,5 +1,6 @@
 package br.com.cidandrade.album.modelo.dao;
 
+import br.com.cidandrade.album.Base;
 import br.com.cidandrade.album.modelo.bd.AlbumBD;
 import br.com.cidandrade.album.modelo.entidade.Irmao;
 import java.sql.Connection;
@@ -20,16 +21,28 @@ public class IrmaoDAO {
     private static final String SELECIONAR_SQL = "Select * from irmao";
 
     public static void inserir(Irmao irmao) {
-        String sql = String.format(INSERIR_SQL, 
-                irmao.getNome(), irmao.getContato());
-        AlbumBD.execute(sql, true);
+        String nome = irmao.getNome();
+        String contato = irmao.getContato();
+        if (!nome.isEmpty() &&  !contato.isEmpty()) {
+            String sql = String.format(INSERIR_SQL, 
+                    irmao.getNome(), irmao.getContato());
+            AlbumBD.execute(sql, true);        
+        } else {
+            Base.mensagemDeErro("Nenhum dos campos pode ser nulo");
+        }
     }
 
     public static void alterar(Irmao irmao) {
-        String sql = String.format(ALTERAR_SQL,
-                irmao.getNome(), irmao.getContato(),
-                irmao.getId());
-        AlbumBD.execute(sql, true);
+        String nome = irmao.getNome();
+        String contato = irmao.getContato();
+        if (!nome.isEmpty() &&  !contato.isEmpty()) {
+            String sql = String.format(ALTERAR_SQL,
+                    irmao.getNome(), irmao.getContato(),
+                    irmao.getId());
+            AlbumBD.execute(sql, true);
+        } else {
+            Base.mensagemDeErro("Nenhum dos campos pode ser nulo");
+        }
     }
 
     public static void remover(Irmao irmao) {

@@ -20,6 +20,8 @@ public class FigurinhaDAO {
     private static final String SELECIONAR_SQL = "Select * from figurinha";
     private static final String SELECIONAR_PAGINA_SQL = "Select * "
             + "from figurinha where pagina=%d";
+    private static final String SELECIONAR_ULTIMA_PAGINA_SQL=
+            "Select max(pagina) as paginas from figurinha";
 
     public static void inserir(Figurinha figurinha) {
         String sql = String.format(INSERIR_SQL,
@@ -70,6 +72,21 @@ public class FigurinhaDAO {
             System.exit(1);
         }
         return lista;
+    }
+
+    public static int qtdPaginas() {
+        int retorno = 0;
+        Connection con = AlbumBD.conectar();
+        try {
+            ResultSet rs = con.createStatement().executeQuery(SELECIONAR_ULTIMA_PAGINA_SQL);
+            rs.next();
+            retorno = rs.getInt("paginas");
+            AlbumBD.desconectar(con);
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+            System.exit(1);
+        }
+        return retorno;
     }
 
     public static List<Figurinha> selecionarTodos() {

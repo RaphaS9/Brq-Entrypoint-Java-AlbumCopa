@@ -1,5 +1,6 @@
 package br.com.cidandrade.album.modelo.bd;
 
+import br.com.cidandrade.album.Base;
 import br.com.cidandrade.album.modelo.dao.FigurinhaDAO;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -34,7 +35,7 @@ public class AlbumBD {
         try {
             con.createStatement().executeUpdate(sql);
         } catch (SQLException e) {
-            System.out.println(e.getLocalizedMessage());
+            Base.mensagemDeErro("Não pode ser executado" + e.getLocalizedMessage());
             if (!continuaNoErro) {
                 System.exit(1);
             }
@@ -44,8 +45,8 @@ public class AlbumBD {
 
     public static Connection conectar() {
         Connection con = null;
-        final String USUARIO = "cidandrade";
-        final String SENHA = "123456";
+        final String USUARIO = "root";
+        final String SENHA = "Guardaroupa09";
         final String URL = "jdbc:mysql://localhost/albumDaCopa2022";
         try {
             con = DriverManager.getConnection(URL,

@@ -1,5 +1,6 @@
 package br.com.cidandrade.album.visao;
 
+import br.com.cidandrade.album.Base;
 import br.com.cidandrade.album.modelo.bd.AlbumBD;
 import br.com.cidandrade.album.modelo.dao.FigurinhaDAO;
 import br.com.cidandrade.album.modelo.dao.IrmaoDAO;
@@ -11,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 public class AlbumGUI extends javax.swing.JFrame {
 
     private int pagina;
+    private int ultimaPagina = FigurinhaDAO.qtdPaginas();
 
     /**
      * Creates new form AlbumGUI
@@ -19,10 +21,34 @@ public class AlbumGUI extends javax.swing.JFrame {
         initComponents();
         AlbumBD.popular();
         pagina = 1;
-        atualiza();
+        atualizaFigurinhas();
+        atualizaIrmaos();
+        jpCadastroIrmaos.setFocusable(true);
+        btnCadastroAlterar.setVisible(false);
+        pnlModificaDesc.setVisible(false);
     }
 
-    private void atualiza() {
+    private void atualizaFigurinhas() {
+        String[] cposFigurinha = {"Número", "Página", "Descr.", "Qtde"};
+        List<Figurinha> figurinhas = FigurinhaDAO.selecionarPorPagina(pagina);
+        String[][] dadosFigurinhas;
+        int posicao = 0;
+        dadosFigurinhas = new String[figurinhas.size()][4];
+        posicao = 0;
+        for (Figurinha fig : figurinhas) {
+            String[] umaFigurinha = new String[4];
+            umaFigurinha[0] = String.valueOf(fig.getNumero());
+            umaFigurinha[1] = String.valueOf(fig.getPagina());
+            umaFigurinha[2] = fig.getDescricao();
+            umaFigurinha[3] = String.valueOf(fig.getQuantidade());
+            dadosFigurinhas[posicao++] = umaFigurinha;
+        }
+        DefaultTableModel modeloFig = new DefaultTableModel(
+                dadosFigurinhas, cposFigurinha);
+        jtFigurinhas.setModel(modeloFig);
+    }
+    
+    private void atualizaIrmaos() {
         String[] cposIrmao = {"ID", "Nome", "Contato"};
         List<Irmao> irmaos = IrmaoDAO.selecionarTodos();
         String[][] dadosIrmaos;
@@ -38,23 +64,8 @@ public class AlbumGUI extends javax.swing.JFrame {
         DefaultTableModel modelo = new DefaultTableModel(
                 dadosIrmaos, cposIrmao);
         jtIrmaos.setModel(modelo);
-        String[] cposFigurinha = {"Número", "Página", "Descr.", "Qtde"};
-        List<Figurinha> figurinhas = FigurinhaDAO.selecionarPorPagina(pagina);
-        String[][] dadosFigurinhas;
-        dadosFigurinhas = new String[figurinhas.size()][4];
-        posicao = 0;
-        for (Figurinha fig : figurinhas) {
-            String[] umaFigurinha = new String[4];
-            umaFigurinha[0] = String.valueOf(fig.getNumero());
-            umaFigurinha[1] = String.valueOf(fig.getPagina());
-            umaFigurinha[2] = fig.getDescricao();
-            umaFigurinha[3] = String.valueOf(fig.getQuantidade());
-            dadosFigurinhas[posicao++] = umaFigurinha;
-        }
-        DefaultTableModel modeloFig = new DefaultTableModel(
-                dadosFigurinhas, cposFigurinha);
-        jTable1.setModel(modeloFig);
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -67,25 +78,48 @@ public class AlbumGUI extends javax.swing.JFrame {
 
         jpAlbum = new javax.swing.JPanel();
         jtpAbas = new javax.swing.JTabbedPane();
-        jpIrmaos = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jtIrmaos = new javax.swing.JTable();
-        jbNovoIrmao = new javax.swing.JButton();
-        jbRemoverIrmao = new javax.swing.JButton();
-        jbModificarIrmao = new javax.swing.JButton();
         jpFigurinhas = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jtFigurinhas = new javax.swing.JTable();
         jbDescricao = new javax.swing.JButton();
         jbAdicionar = new javax.swing.JButton();
         jbRetirar = new javax.swing.JButton();
         jbTrocar = new javax.swing.JButton();
         jbAnterior = new javax.swing.JButton();
         jbProximo = new javax.swing.JButton();
+        pnlModificaDesc = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        txfDescricao = new javax.swing.JTextField();
+        btnModificaDescricao = new javax.swing.JButton();
+        jpIrmaos = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jtIrmaos = new javax.swing.JTable();
+        jbNovoIrmao = new javax.swing.JButton();
+        jbRemoverIrmao = new javax.swing.JButton();
+        jbModificarIrmao = new javax.swing.JButton();
+        jpCadastroIrmaos = new javax.swing.JPanel();
+        txfNome = new javax.swing.JTextField();
+        txfContato = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        btnCadastroAlterar = new javax.swing.JButton();
+        btnCadastroAdicionar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jtIrmaos.setModel(new javax.swing.table.DefaultTableModel(
+        javax.swing.GroupLayout jpAlbumLayout = new javax.swing.GroupLayout(jpAlbum);
+        jpAlbum.setLayout(jpAlbumLayout);
+        jpAlbumLayout.setHorizontalGroup(
+            jpAlbumLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jpAlbumLayout.setVerticalGroup(
+            jpAlbumLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        jtFigurinhas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -96,70 +130,21 @@ public class AlbumGUI extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(jtIrmaos);
+        jScrollPane1.setViewportView(jtFigurinhas);
 
-        jbNovoIrmao.setText("Adicionar");
-
-        jbRemoverIrmao.setText("Remover");
-        jbRemoverIrmao.addActionListener(new java.awt.event.ActionListener() {
+        jbDescricao.setText("Descrição");
+        jbDescricao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbRemoverIrmaoActionPerformed(evt);
+                jbDescricaoActionPerformed(evt);
             }
         });
 
-        jbModificarIrmao.setText("Modificar");
-
-        javax.swing.GroupLayout jpIrmaosLayout = new javax.swing.GroupLayout(jpIrmaos);
-        jpIrmaos.setLayout(jpIrmaosLayout);
-        jpIrmaosLayout.setHorizontalGroup(
-            jpIrmaosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jpIrmaosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jpIrmaosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
-                    .addGroup(jpIrmaosLayout.createSequentialGroup()
-                        .addComponent(jbNovoIrmao)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbRemoverIrmao)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbModificarIrmao)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-
-        jpIrmaosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jbModificarIrmao, jbNovoIrmao, jbRemoverIrmao});
-
-        jpIrmaosLayout.setVerticalGroup(
-            jpIrmaosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jpIrmaosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jpIrmaosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jbNovoIrmao)
-                    .addComponent(jbRemoverIrmao)
-                    .addComponent(jbModificarIrmao))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jtpAbas.addTab("Irmãos", jpIrmaos);
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
-
-        jbDescricao.setText("Descrição");
-
         jbAdicionar.setText("Adicionar");
+        jbAdicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbAdicionarActionPerformed(evt);
+            }
+        });
 
         jbRetirar.setText("Retirar");
         jbRetirar.addActionListener(new java.awt.event.ActionListener() {
@@ -176,35 +161,84 @@ public class AlbumGUI extends javax.swing.JFrame {
         });
 
         jbAnterior.setText("Anterior");
+        jbAnterior.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbAnteriorActionPerformed(evt);
+            }
+        });
 
         jbProximo.setText("Próxima");
+        jbProximo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbProximoActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Descrição");
+
+        btnModificaDescricao.setText("Modificar Descrição");
+        btnModificaDescricao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificaDescricaoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlModificaDescLayout = new javax.swing.GroupLayout(pnlModificaDesc);
+        pnlModificaDesc.setLayout(pnlModificaDescLayout);
+        pnlModificaDescLayout.setHorizontalGroup(
+            pnlModificaDescLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlModificaDescLayout.createSequentialGroup()
+                .addGroup(pnlModificaDescLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlModificaDescLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txfDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlModificaDescLayout.createSequentialGroup()
+                        .addGap(40, 40, 40)
+                        .addComponent(btnModificaDescricao)))
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
+        pnlModificaDescLayout.setVerticalGroup(
+            pnlModificaDescLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlModificaDescLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(pnlModificaDescLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txfDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(btnModificaDescricao)
+                .addContainerGap(9, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jpFigurinhasLayout = new javax.swing.GroupLayout(jpFigurinhas);
         jpFigurinhas.setLayout(jpFigurinhasLayout);
         jpFigurinhasLayout.setHorizontalGroup(
             jpFigurinhasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpFigurinhasLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jpFigurinhasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpFigurinhasLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jpFigurinhasLayout.createSequentialGroup()
-                        .addGroup(jpFigurinhasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addContainerGap()
+                        .addGroup(jpFigurinhasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jpFigurinhasLayout.createSequentialGroup()
-                                .addComponent(jbDescricao)
+                                .addGroup(jpFigurinhasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jpFigurinhasLayout.createSequentialGroup()
+                                        .addComponent(jbDescricao)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jbAdicionar))
+                                    .addGroup(jpFigurinhasLayout.createSequentialGroup()
+                                        .addComponent(jbAnterior)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jbProximo)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jbAdicionar))
-                            .addGroup(jpFigurinhasLayout.createSequentialGroup()
-                                .addComponent(jbAnterior)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jbProximo)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbRetirar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbTrocar)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                                .addComponent(jbRetirar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jbTrocar))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jpFigurinhasLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(pnlModificaDesc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jpFigurinhasLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jbAdicionar, jbAnterior, jbDescricao, jbProximo, jbRetirar, jbTrocar});
@@ -212,8 +246,8 @@ public class AlbumGUI extends javax.swing.JFrame {
         jpFigurinhasLayout.setVerticalGroup(
             jpFigurinhasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpFigurinhasLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
                 .addGroup(jpFigurinhasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jbDescricao)
                     .addComponent(jbAdicionar)
@@ -223,34 +257,179 @@ public class AlbumGUI extends javax.swing.JFrame {
                 .addGroup(jpFigurinhasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jbAnterior)
                     .addComponent(jbProximo))
-                .addGap(0, 10, Short.MAX_VALUE))
+                .addGap(41, 41, 41)
+                .addComponent(pnlModificaDesc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         jtpAbas.addTab("Figurinhas", jpFigurinhas);
 
-        javax.swing.GroupLayout jpAlbumLayout = new javax.swing.GroupLayout(jpAlbum);
-        jpAlbum.setLayout(jpAlbumLayout);
-        jpAlbumLayout.setHorizontalGroup(
-            jpAlbumLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jpAlbumLayout.createSequentialGroup()
+        jtIrmaos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jtIrmaos);
+
+        jbNovoIrmao.setText("Adicionar");
+        jbNovoIrmao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbNovoIrmaoActionPerformed(evt);
+            }
+        });
+
+        jbRemoverIrmao.setText("Remover");
+        jbRemoverIrmao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbRemoverIrmaoActionPerformed(evt);
+            }
+        });
+
+        jbModificarIrmao.setText("Modificar");
+        jbModificarIrmao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbModificarIrmaoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jpIrmaosLayout = new javax.swing.GroupLayout(jpIrmaos);
+        jpIrmaos.setLayout(jpIrmaosLayout);
+        jpIrmaosLayout.setHorizontalGroup(
+            jpIrmaosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpIrmaosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jtpAbas)
+                .addGroup(jpIrmaosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jpIrmaosLayout.createSequentialGroup()
+                        .addComponent(jbNovoIrmao)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jbModificarIrmao)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jbRemoverIrmao)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        jpAlbumLayout.setVerticalGroup(
-            jpAlbumLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jpAlbumLayout.createSequentialGroup()
+
+        jpIrmaosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jbModificarIrmao, jbNovoIrmao, jbRemoverIrmao});
+
+        jpIrmaosLayout.setVerticalGroup(
+            jpIrmaosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpIrmaosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jtpAbas)
-                .addGap(216, 216, 216))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jpIrmaosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jbNovoIrmao)
+                    .addComponent(jbModificarIrmao)
+                    .addComponent(jbRemoverIrmao))
+                .addContainerGap(173, Short.MAX_VALUE))
         );
+
+        jtpAbas.addTab("Irmãos", jpIrmaos);
+
+        jpCadastroIrmaos.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jpCadastroIrmaosFocusGained(evt);
+            }
+        });
+
+        txfNome.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txfNomeActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Nome");
+
+        jLabel3.setText("Contato");
+
+        btnCadastroAlterar.setText("Alterar");
+        btnCadastroAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadastroAlterarActionPerformed(evt);
+            }
+        });
+
+        btnCadastroAdicionar.setText("Adicionar");
+        btnCadastroAdicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadastroAdicionarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(75, 75, 75)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnCadastroAdicionar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCadastroAlterar, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(46, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnCadastroAlterar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnCadastroAdicionar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jpCadastroIrmaosLayout = new javax.swing.GroupLayout(jpCadastroIrmaos);
+        jpCadastroIrmaos.setLayout(jpCadastroIrmaosLayout);
+        jpCadastroIrmaosLayout.setHorizontalGroup(
+            jpCadastroIrmaosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpCadastroIrmaosLayout.createSequentialGroup()
+                .addGap(51, 51, 51)
+                .addGroup(jpCadastroIrmaosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jpCadastroIrmaosLayout.createSequentialGroup()
+                        .addGroup(jpCadastroIrmaosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addGap(18, 18, 18)
+                        .addGroup(jpCadastroIrmaosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txfNome, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txfContato, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jpCadastroIrmaosLayout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(154, Short.MAX_VALUE))))
+        );
+        jpCadastroIrmaosLayout.setVerticalGroup(
+            jpCadastroIrmaosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpCadastroIrmaosLayout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addGroup(jpCadastroIrmaosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txfNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addGap(36, 36, 36)
+                .addGroup(jpCadastroIrmaosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txfContato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(31, 31, 31)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(263, Short.MAX_VALUE))
+        );
+
+        jtpAbas.addTab("Cadastro Irmaos", jpCadastroIrmaos);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(12, 12, 12)
+                .addComponent(jtpAbas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jpAlbum, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -258,24 +437,182 @@ public class AlbumGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jpAlbum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jtpAbas, javax.swing.GroupLayout.PREFERRED_SIZE, 516, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jpAlbum, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    private Irmao getIrmaoPorLinha(int linhaSelecionada) {
+        String idString = (String) jtIrmaos.getValueAt(linhaSelecionada, 0);
+        String nomeSelecionado = (String) jtIrmaos.getValueAt(linhaSelecionada, 1);
+        String contatoSelecionado = (String) jtIrmaos.getValueAt(linhaSelecionada, 2);
+        byte idByte = Byte.parseByte(idString);
+        Irmao irmao = new Irmao(idByte, nomeSelecionado, contatoSelecionado);
+        return irmao;
+    }
+    
+    private Figurinha getFigurinhaPorLinha(int linhaSelecionada) {
+        String numero = (String) jtFigurinhas.getValueAt(linhaSelecionada, 0);
+        int numeroInt = Integer.parseInt(numero);
+        
+        String pagina = (String) jtFigurinhas.getValueAt(linhaSelecionada, 1);
+        byte paginaByte = Byte.parseByte(pagina);
+        
+        String descr = (String) jtFigurinhas.getValueAt(linhaSelecionada, 2);
+        
+        String qtdFigurinha = (String) jtFigurinhas.getValueAt(linhaSelecionada, 3);
+        byte qtdByte = Byte.parseByte(qtdFigurinha);
+        
+        Figurinha figurinha = new Figurinha(numeroInt, paginaByte,
+                descr, qtdByte);
+        
+        return figurinha;
+    }
+        
     private void jbRetirarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbRetirarActionPerformed
-        // TODO add your handling code here:
+        int linhaSelecionada = jtFigurinhas.getSelectedRow();
+        if (jtFigurinhas.isRowSelected(linhaSelecionada)) {
+            Figurinha figurinhaASerAlterada = getFigurinhaPorLinha(linhaSelecionada);
+            byte qtdFigurinhas = figurinhaASerAlterada.getQuantidade();
+            if (qtdFigurinhas > 1) {
+                figurinhaASerAlterada.setQuantidade(--qtdFigurinhas);
+                FigurinhaDAO.alterar(figurinhaASerAlterada);
+                atualizaFigurinhas();
+            } else if(qtdFigurinhas==0){
+                Base.mensagemDeErro("Você não possui está figurinha");
+            } else {
+                Base.mensagemDeErro("Você não pode remover uma figurinha já"
+                        + " colada no álbum");
+            }
+        }
     }//GEN-LAST:event_jbRetirarActionPerformed
 
     private void jbTrocarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbTrocarActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_jbTrocarActionPerformed
 
     private void jbRemoverIrmaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbRemoverIrmaoActionPerformed
-        // TODO add your handling code here:
+        int linhaSelecionada = jtIrmaos.getSelectedRow();
+        if (linhaSelecionada > -1){
+            String idString = (String) jtIrmaos.getValueAt(linhaSelecionada, 0);
+            byte idByte = Byte.parseByte(idString);
+            String nome = (String) jtIrmaos.getValueAt(linhaSelecionada, 1);
+            String contato = (String) jtIrmaos.getValueAt(linhaSelecionada, 2);
+            Irmao irmaoASerRemovido = new Irmao(idByte, nome, contato);
+
+            IrmaoDAO.remover(irmaoASerRemovido);
+            atualizaIrmaos();
+        }
     }//GEN-LAST:event_jbRemoverIrmaoActionPerformed
+
+    private void jbProximoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbProximoActionPerformed
+        if (pagina < ultimaPagina){
+            ++pagina;
+            atualizaFigurinhas();
+        }
+    }//GEN-LAST:event_jbProximoActionPerformed
+
+    private void jbAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAnteriorActionPerformed
+        if (pagina > 1){
+            --pagina;
+            atualizaFigurinhas();
+        }
+    }//GEN-LAST:event_jbAnteriorActionPerformed
+
+    private void jbAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAdicionarActionPerformed
+        int linhaSelecionada = jtFigurinhas.getSelectedRow();
+        if (jtFigurinhas.isRowSelected(linhaSelecionada)) {
+            Figurinha figurinhaASerAlterada = getFigurinhaPorLinha(linhaSelecionada);
+            byte qtdByte = figurinhaASerAlterada.getQuantidade();
+            figurinhaASerAlterada.setQuantidade(++qtdByte);
+            FigurinhaDAO.alterar(figurinhaASerAlterada);
+            atualizaFigurinhas();
+        }
+    }//GEN-LAST:event_jbAdicionarActionPerformed
+
+    private void jbDescricaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbDescricaoActionPerformed
+        pnlModificaDesc.setVisible(true);
+    }//GEN-LAST:event_jbDescricaoActionPerformed
+
+    private void jbNovoIrmaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbNovoIrmaoActionPerformed
+        jtpAbas.setSelectedIndex(2);
+        btnCadastroAlterar.setVisible(false);
+        btnCadastroAdicionar.setVisible(true);
+    }//GEN-LAST:event_jbNovoIrmaoActionPerformed
+
+    private void jbModificarIrmaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbModificarIrmaoActionPerformed
+        jtpAbas.setSelectedIndex(2);
+        btnCadastroAlterar.setVisible(true);
+        btnCadastroAdicionar.setVisible(false);
+        jpCadastroIrmaos.requestFocusInWindow();
+    }//GEN-LAST:event_jbModificarIrmaoActionPerformed
+
+    private void btnCadastroAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastroAlterarActionPerformed
+        int linhaSelecionada = jtIrmaos.getSelectedRow();
+        if (linhaSelecionada > -1){
+            Irmao irmaoSelecionado = getIrmaoPorLinha(linhaSelecionada);
+            byte idSelecionado = irmaoSelecionado.getId();
+            String nomeSelecionado = irmaoSelecionado.getNome();
+            String contatoSelecionado = irmaoSelecionado.getContato();
+            
+            String nome = txfNome.getText();
+            String contato = txfContato.getText();
+            Irmao irmaoASerAlterado = new Irmao(idSelecionado, nome, contato);
+            IrmaoDAO.alterar(irmaoASerAlterado);
+            atualizaIrmaos();
+        }
+    }//GEN-LAST:event_btnCadastroAlterarActionPerformed
+
+    private void txfNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfNomeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txfNomeActionPerformed
+
+    private void jpCadastroIrmaosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jpCadastroIrmaosFocusGained
+        int linhaSelecionada = jtIrmaos.getSelectedRow();
+        if (linhaSelecionada > -1){
+            Irmao irmaoSelecionado = getIrmaoPorLinha(linhaSelecionada);
+            txfNome.setText(irmaoSelecionado.getNome());
+            txfContato.setText(irmaoSelecionado.getContato());
+        }
+    }//GEN-LAST:event_jpCadastroIrmaosFocusGained
+
+    private void btnCadastroAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastroAdicionarActionPerformed
+        String nome = txfNome.getText();
+        String contato = txfContato.getText();
+        Irmao irmaoASerAdicionado = new Irmao(nome, contato);
+        
+        IrmaoDAO.inserir(irmaoASerAdicionado);
+        atualizaIrmaos();
+    }//GEN-LAST:event_btnCadastroAdicionarActionPerformed
+
+    private void btnModificaDescricaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificaDescricaoActionPerformed
+        // TODO add your handling code here:
+        int figurinhaSelecionada = jtFigurinhas.getSelectedRow();
+        if (figurinhaSelecionada > -1){
+            String numero = (String) jtFigurinhas.getValueAt(figurinhaSelecionada, 0);
+            int numeroInt = Integer.parseInt(numero);
+            String pagina = (String) jtFigurinhas.getValueAt(figurinhaSelecionada, 1);
+            byte paginaByte = Byte.parseByte(pagina);
+            String qtdFigurinha = (String) jtFigurinhas.getValueAt(figurinhaSelecionada, 3);
+            byte qtdByte = Byte.parseByte(qtdFigurinha);
+            
+            String descr = txfDescricao.getText();
+            
+            Figurinha figurinhaASerAlterada = new Figurinha(numeroInt, paginaByte,
+                    descr, qtdByte);
+
+            FigurinhaDAO.alterar(figurinhaASerAlterada);
+            atualizaFigurinhas();   
+        }
+    }//GEN-LAST:event_btnModificaDescricaoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -313,9 +650,15 @@ public class AlbumGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCadastroAdicionar;
+    private javax.swing.JButton btnCadastroAlterar;
+    private javax.swing.JButton btnModificaDescricao;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JButton jbAdicionar;
     private javax.swing.JButton jbAnterior;
     private javax.swing.JButton jbDescricao;
@@ -326,9 +669,15 @@ public class AlbumGUI extends javax.swing.JFrame {
     private javax.swing.JButton jbRetirar;
     private javax.swing.JButton jbTrocar;
     private javax.swing.JPanel jpAlbum;
+    private javax.swing.JPanel jpCadastroIrmaos;
     private javax.swing.JPanel jpFigurinhas;
     private javax.swing.JPanel jpIrmaos;
+    private javax.swing.JTable jtFigurinhas;
     private javax.swing.JTable jtIrmaos;
     private javax.swing.JTabbedPane jtpAbas;
+    private javax.swing.JPanel pnlModificaDesc;
+    private javax.swing.JTextField txfContato;
+    private javax.swing.JTextField txfDescricao;
+    private javax.swing.JTextField txfNome;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,8 +5,9 @@ public class Irmao {
     private byte id;
     private String nome, contato;
 
-    public Irmao(String nome) {
+    public Irmao(String nome, String contato) {
         this.nome = nome;
+        this.contato = contato;
     }
 
     public Irmao(byte id, String nome, String contato) {
