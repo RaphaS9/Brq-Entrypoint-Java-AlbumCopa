@@ -25,6 +25,7 @@ public class AlbumBD {
         if (qtdeFigurinhas < 300) {
             for (int i = 1; i <= 300; i++) {
                 FigurinhaDAO.inserir(i);
+                System.out.println("aaaaaaaa");
             }
         }
     }
